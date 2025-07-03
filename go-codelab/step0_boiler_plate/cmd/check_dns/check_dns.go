@@ -1,8 +1,11 @@
 package check_dns
 
 import (
+	"fmt"
 	"go-agent/cmd/cliflags"
+	"go-agent/internal/application"
 	"go-agent/internal/domain"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +18,16 @@ func New() *cobra.Command {
 		Example: example,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
+			flags, err := parseFlags(cmd)
+			if err != nil {
+				return err
+			}
+
+			check := application.InitCheck()
+			if err := check.ResolveDNS(flags); err != nil {
+				fmt.Println("Error %e", err)
+			}
+
 			return nil
 		},
 	}
@@ -26,6 +39,11 @@ func New() *cobra.Command {
 }
 
 func parseFlags(cmd *cobra.Command) (domain.CheckHostOptions, error) {
+	flags := cmd.Flags()
 
-	return domain.CheckHostOptions{}, nil
+	host, err := flags.GetString(cliflags.Host)
+	if err != nil {
+		return domain.CheckHostOptions{}, err
+	}
+	return domain.CheckHostOptions{Host: host}, nil
 }
