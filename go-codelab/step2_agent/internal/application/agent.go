@@ -1,9 +1,10 @@
 package application
 
 import (
+	"bufio"
 	"context"
 	"fmt"
-	"time"
+	"os"
 )
 
 func InitAgent() AgentPort {
@@ -19,8 +20,20 @@ func (a *Agent) Run(ctx context.Context) error {
 
 	for {
 		fmt.Printf("\u001b[93mClaude\u001b[0m: %s\n", "..?")
-		time.Sleep(2 * time.Second)
+		userInput, ok := a.getUserMessage()
+		if !ok {
+			break
+		}
+		fmt.Printf("\u001b[93m%s\u001b[0m: %s\n", "..?", userInput)
 	}
 
 	return nil
+}
+
+func (a *Agent) getUserMessage() (string, bool) {
+	scanner := bufio.NewScanner(os.Stdin)
+	if !scanner.Scan() {
+		return "", false
+	}
+	return scanner.Text(), true
 }

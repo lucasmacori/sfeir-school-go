@@ -1,8 +1,10 @@
 package application
 
 import (
-	"go-agent/internal/domain"
 	"context"
+	"go-agent/internal/domain"
+
+	"github.com/anthropics/anthropic-sdk-go"
 )
 
 type AgentPort interface {
@@ -11,4 +13,8 @@ type AgentPort interface {
 
 type CheckerPort interface {
 	ResolveDNS(opts domain.CheckHostOptions) error
+}
+
+type LLMPort interface {
+	RunInference(ctx context.Context, conversation []anthropic.MessageParam) (*anthropic.Message, error)
 }

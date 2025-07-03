@@ -1,9 +1,11 @@
 package llm_agent
 
 import (
-	"go-agent/internal/application"
 	"context"
 	"fmt"
+	"go-agent/internal/application"
+	anthropicLocal "go-agent/internal/infrastructure/anthropic"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +17,7 @@ func New() *cobra.Command {
 		Short:   "Run the LLM agent",
 		Example: example,
 		Run: func(cmd *cobra.Command, args []string) {
-			agent := application.InitAgent()
+			agent := application.InitAgent(anthropicLocal.NewLLM())
 			err := agent.Run(context.TODO())
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())

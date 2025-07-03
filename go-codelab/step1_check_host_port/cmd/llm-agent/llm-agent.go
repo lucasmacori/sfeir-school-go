@@ -2,28 +2,25 @@ package llm_agent
 
 import (
 	"context"
-	"fmt"
 	"go-agent/internal/application"
 
 	"github.com/spf13/cobra"
 )
 
-var example = `# sfeir_cli llm-agent`
+var example = `# llm-agent`
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "llm-agent",
 		Short:   "Run the LLM agent",
 		Example: example,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			agent := application.InitAgent()
-			err := agent.Run(context.TODO())
-			if err != nil {
-				fmt.Printf("Error: %s\n", err.Error())
+			if err := agent.Run(context.TODO()); err != nil {
+				return err
 			}
-
+			return nil
 		},
 	}
-
 	return cmd
 }
